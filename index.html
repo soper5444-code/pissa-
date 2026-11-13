@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>قصة طفلي | قصص مخصّصة للأطفال</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --p1:#6C4CF1; --p2:#F14C9B; --p3:#38C6D9;
+    --dark:#1E1740; --soft:#F5F2FF; --gold:#FFC542;
+  }
+  body{
+    font-family:'Tajawal',system-ui,sans-serif;
+    background:linear-gradient(160deg,#F7F4FF 0%,#FFF0F7 50%,#EAFBFF 100%);
+    color:var(--dark); min-height:100vh; padding-bottom:40px;
+  }
+  .wrap{max-width:760px;margin:0 auto;padding:16px}
+  header{
+    background:linear-gradient(135deg,var(--p1),var(--p2));
+    color:#fff;border-radius:0 0 28px 28px;padding:26px 18px 30px;
+    text-align:center;position:relative;overflow:hidden;
+    box-shadow:0 10px 30px rgba(108,76,241,.25);
+  }
+  header::after{
+    content:"";position:absolute;width:220px;height:220px;border-radius:50%;
+    background:rgba(255,255,255,.12);top:-110px;left:-60px;
+  }
+  header h1{font-size:1.55rem;font-weight:900;letter-spacing:-.5px}
+  header p{font-size:.9rem;opacity:.92;margin-top:6px}
+  .badge-free{
+    display:inline-block;margin-top:12px;background:var(--gold);color:#3a2a00;
+    font-weight:700;font-size:.78rem;padding:6px 14px;border-radius:99px;
+  }
+  .card{
+    background:#fff;border-radius:22px;padding:20px;margin-top:16px;
+    box-shadow:0 6px 24px rgba(30,23,64,.07);
+  }
+  .card h2{font-size:1.05rem;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+  .card h2 span.num{
+    background:var(--soft);color:var(--p1);width:26px;height:26px;border-radius:9px;
+    display:grid;place-items:center;font-size:.85rem;font-weight:900;
+  }
+  label{display:block;font-size:.85rem;font-weight:700;margin-bottom:7px;color:#4a4370}
+  input[type=text]{
+    width:100%;padding:13px 15px;border:2px solid #E8E4F5;border-radius:14px;
+    font-family:inherit;font-size:1rem;outline:none;transition:.2s;background:var(--soft);
+  }
+  input[type=text]:focus{border-color:var(--p1);background:#fff}
+  .upload{
+    border:2px dashed #D7CFF5;border-radius:16px;padding:20px;text-align:center;
+    cursor:pointer;transition:.2s;background:var(--soft);
+  }
+  .upload:hover{border-color:var(--p1);background:#fff}
+  .upload .ic{font-size:1.8rem}
+  .upload p{font-size:.82rem;color:#7b74a0;margin-top:4px}
+  #photoPreview{
+    width:96px;height:96px;border-radius:50%;object-fit:cover;display:none;
+    margin:0 auto 8px;border:4px solid #fff;box-shadow:0 6px 18px rgba(108,76,241,.3);
+  }
+  .chars{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:10px}
+  .char{
+    border:2px solid #EDE9FA;border-radius:16px;padding:12px 6px;text-align:center;
+    cursor:pointer;transition:.18s;background:#fff;
+  }
+  .char .em{font-size:1.7rem;display:block;line-height:1.2}
+  .char .nm{font-size:.72rem;font-weight:700;margin-top:5px;color:#5b5480}
+  .char:hover{transform:translateY(-3px);border-color:#CFC4F7}
+  .char.active{border-color:var(--p1);background:linear-gradient(160deg,#F2EEFF,#FFF);box-shadow:0 8px 20px rgba(108,76,241,.18)}
+  .char.active .nm{color:var(--p1)}
+  .btn{
+    width:100%;padding:16px;border:none;border-radius:16px;font-family:inherit;
+    font-size:1.05rem;font-weight:900;cursor:pointer;transition:.2s;margin-top:18px;
+    background:linear-gradient(135deg,var(--p1),var(--p2));color:#fff;
+    box-shadow:0 10px 24px rgba(108,76,241,.32);
+  }
+  .btn:hover{transform:translateY(-2px);box-shadow:0 14px 30px rgba(108,76,241,.4)}
+  .btn:active{transform:scale(.98)}
+  .btn.ghost{background:#fff;color:var(--p1);border:2px solid #E3DBFF;box-shadow:none}
+  .btn.green{background:linear-gradient(135deg,#25D366,#12A855);box-shadow:0 10px 24px rgba(37,211,102,.3)}
+  .btn.small{font-size:.85rem;padding:12px;margin-top:10px}
+  #storyBox{display:none}
+  .story-paper{
+    background:#fff;border-radius:22px;padding:24px 20px;margin-top:16px;
+    box-shadow:0 10px 34px rgba(30,23,64,.1);border:3px solid #fff;position:relative;
+  }
+  .story-paper::before{
+    content:"";position:absolute;inset:0;border-radius:20px;pointer-events:none;
+    border:2px dashed #EDE7FF;
+  }
+  .story-head{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+  .story-head img{
+    width:78px;height:78px;border-radius:50%;object-fit:cover;flex:0 0 auto;
+    border:4px solid #fff;box-shadow:0 6px 16px rgba(0,0,0,.12);
+  }
+  .story-head .ph{
+    width:78px;height:78px;border-radius:50%;flex:0 0 auto;display:grid;place-items:center;
+    font-size:2rem;background:linear-gradient(135deg,#F2EEFF,#FFE9F4);
+  }
+  .story-head h3{font-size:1.15rem;font-weight:900;line-height:1.4;color:var(--p1)}
+  .story-head .who{font-size:.78rem;color:#8b84ab;margin-top:3px}
+  .story-body p{
+    font-size:1rem;line-height:2;margin-bottom:12px;color:#332c56;text-align:justify;
+  }
+  .story-body p:first-child::first-letter{font-size:1.6rem;font-weight:900;color:var(--p2)}
+  .story-foot{
+    margin-top:14px;padding-top:12px;border-top:1px dashed #E8E2FA;
+    font-size:.75rem;color:#9a93b8;text-align:center;
+  }
+  .overlay{
+    position:fixed;inset:0;background:rgba(20,14,45,.55);backdrop-filter:blur(4px);
+    display:none;align-items:center;justify-content:center;padding:16px;z-index:99;
+  }
+  .overlay.show{display:flex}
+  .modal{
+    background:#fff;border-radius:24px;padding:22px;max-width:440px;width:100%;
+    max-height:92vh;overflow-y:auto;animation:pop .25s ease;
+  }
+  @keyframes pop{from{transform:scale(.92);opacity:0}to{transform:scale(1);opacity:1}}
+  .modal h3{font-size:1.15rem;font-weight:900;margin-bottom:6px;text-align:center}
+  .modal .sub{font-size:.82rem;color:#8b84ab;text-align:center;margin-bottom:16px}
+  .step{
+    display:flex;gap:10px;background:var(--soft);border-radius:14px;padding:12px;margin-bottom:10px;
+  }
+  .step .n{
+    background:var(--p1);color:#fff;width:24px;height:24px;border-radius:8px;flex:0 0 auto;
+    display:grid;place-items:center;font-size:.8rem;font-weight:900;
+  }
+  .step p{font-size:.85rem;line-height:1.7;color:#3d3660;font-weight:500}
+  .bank-box{
+    background:#0B7A3E;color:#fff;border-radius:16px;padding:14px;margin:12px 0;
+    font-size:.85rem;line-height:1.9;
+  }
+  .bank-box .row{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid rgba(255,255,255,.18);padding:4px 0}
+  .bank-box .row:last-child{border:none}
+  .bank-box .row b{font-weight:700;opacity:.85}
+  .bank-box .row span{font-weight:900;letter-spacing:.3px;direction:ltr}
+  .code-input{
+    width:100%;padding:14px;border:2px solid #E8E4F5;border-radius:14px;text-align:center;
+    font-family:inherit;font-size:1.05rem;font-weight:900;letter-spacing:2px;direction:ltr;
+    background:var(--soft);outline:none;
+  }
+  .code-input:focus{border-color:var(--p1);background:#fff}
+  .msg{font-size:.82rem;font-weight:700;text-align:center;margin-top:10px;min-height:18px}
+  .msg.ok{color:#12A855}
+  .msg.err{color:#E23B3B}
+  #adminPanel{display:none}
+  .code-item{
+    display:flex;justify-content:space-between;align-items:center;gap:8px;
+    padding:8px 12px;border-radius:10px;background:var(--soft);margin-bottom:6px;
+    font-size:.82rem;direction:ltr;font-weight:700;letter-spacing:1px;
+  }
+  .code-item.used{opacity:.45;text-decoration:line-through}
+  .code-item button{
+    background:var(--p1);color:#fff;border:none;border-radius:8px;padding:5px 10px;
+    font-family:inherit;font-size:.72rem;font-weight:700;cursor:pointer;
+  }
+  footer{text-align:center;font-size:.72rem;color:#a49dc2;margin-top:24px;line-height:1.9}
+  footer button{background:none;border:none;color:#a49dc2;font-size:1rem;cursor:pointer}
+  @media print{
+    body{background:#fff}
+    header,.card,#payOverlay,.btn,footer,#adminPanel{display:none!important}
+    .story-paper{box-shadow:none;border:1px solid #ddd;margin:0}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📖 قصة طفلي</h1>
+  <p>حوّل اسم طفلك وصورته إلى قصة سحرية مع بطلَه المفضل</p>
+  <div class="badge-free" id="freeBadge">🎁 أول قصة مجانية بالكامل</div>
+</header>
+
+<div class="wrap">
+  <div class="card" id="formCard">
+    <h2><span class="num">1</span> بيانات الطفل</h2>
+    <label for="childName">اسم الطفل</label>
+    <input type="text" id="childName" placeholder="مثال: آدم" maxlength="20">
+    <div style="height:16px"></div>
+    <label>صورة الطفل</label>
+    <div class="upload" id="uploadBox">
+      <img id="photoPreview" alt="">
+      <div class="ic" id="uploadIcon">📷</div>
+      <div style="font-weight:700;font-size:.9rem;margin-top:4px" id="uploadText">اضغط لرفع الصورة</div>
+      <p>تُعالَج الصورة على جهازك فقط ولا تُرفع لأي سيرفر</p>
+      <input type="file" id="photoInput" accept="image/*" hidden>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2><span class="num">2</span> اختر بطل القصة</h2>
+    <div class="chars" id="charsGrid"></div>
+  </div>
+
+  <button class="btn" id="generateBtn">✨ أنشئ القصة الآن</button>
+
+  <div id="storyBox">
+    <div class="story-paper">
+      <div class="story-head">
+        <img id="storyPhoto" alt="" style="display:none">
+        <div class="ph" id="storyPhotoPlaceholder">🧒</div>
+        <div>
+          <h3 id="storyTitle"></h3>
+          <div class="who" id="storyWho"></div>
+        </div>
+      </div>
+      <div class="story-body" id="storyBody"></div>
+      <div class="story-foot">قصة مخصّصة صُنعت بحب ❤️ — قصة طفلي</div>
+    </div>
+    <button class="btn ghost" onclick="window.print()">🖨️ طباعة / حفظ PDF</button>
+    <button class="btn ghost" id="newStoryBtn">🔄 قصة جديدة</button>
+  </div>
+
+  <footer>
+    جميع البيانات تبقى على جهازك · قصة طفلي © 2025
+    <br>
+    <button id="adminToggle" title="لوحة المفاتيح">⚙️</button>
+  </footer>
+
+  <div class="card" id="adminPanel">
+    <h2>🔐 لوحة الأكواد (للمشرف)</h2>
+    <p style="font-size:.8rem;color:#8b84ab;margin-bottom:12px">
+      انسخ الكود وأرسله للعميل بعد تأكيد الدفع على الواتساب.
+      الكود المستخدم على هذا الجهاز يظهر مشطوبًا.
+    </p>
+    <div id="codeList"></div>
+  </div>
+</div>
+
+<div class="overlay" id="payOverlay">
+  <div class="modal">
+    <h3>🎁 انتهت القصة المجانية</h3>
+    <p class="sub">لإنشاء قصة جديدة، فعّل الحساب بـ 10 شيكل فقط (تفعيل دائم)</p>
+    <div class="step"><div class="n">1</div><p>حوّل مبلغ <b>10 شيكل</b> على حساب بنك فلسطين التالي:</p></div>
+    <div class="bank-box">
+      <div class="row"><b>اسم الحساب</b><span>قصة طفلي</span></div>
+      <div class="row"><b>رقم الحساب</b><span>1234567</span></div>
+      <div class="row"><b>IBAN</b><span>PS92PALS000000000123456789</span></div>
+      <div class="row"><b>البنك</b><span>Bank of Palestine</span></div>
+    </div>
+    <div class="step"><div class="n">2</div><p>أرسل صورة إشعار التحويل على واتساب مع اسم طفلك.</p></div>
+    <a class="btn green" style="display:block;text-align:center;text-decoration:none"
+       href="https://wa.me/970599000000?text=%D9%85%D8%B1%D8%AD%D8%A8%D8%A7%D8%8C%20%D8%AD%D9%88%D9%91%D9%84%D8%AA%2010%20%D8%B4%D9%8A%D9%83%D9%84%20%D9%84%D8%AA%D9%81%D8%B9%D9%8A%D9%84%20%D8%AA%D8%B7%D8%A8%D9%8A%D9%82%20%D9%82%D8%B5%D8%A9%20%D8%B7%D9%81%D9%84%D9%8A"
+       target="_blank">📲 إرسال الإشعار على واتساب</a>
+    <div class="step" style="margin-top:14px"><div class="n">3</div><p>ستصلك رسالة تحتوي على كود التفعيل، أدخله هنا:</p></div>
+    <input type="text" class="code-input" id="codeInput" placeholder="QP-XXXX-XXXX" autocomplete="off">
+    <button class="btn" id="activateBtn">🔓 تفعيل الكود</button>
+    <div class="msg" id="codeMsg"></div>
+    <button class="btn ghost small" id="closePay">إغلاق</button>
+  </div>
+</div>
+
+<script>
+const VALID_CODES = [
+  "QP-4K7M-2X9T","QP-8N3R-6W1Y","QP-5T2B-9L4H","QP-7C1V-3P8K",
+  "QP-2M9X-7R5N","QP-6R4L-1T3B","QP-9W8K-5N2M","QP-3P6T-8X4R",
+  "QP-1N5B-4K9W","QP-8X2M-7T1P","QP-4R9K-3N6B","QP-7T1P-8W5M",
+  "QP-5B3N-2R7X","QP-2K8W-9P4T","QP-6N1X-5B8K","QP-9M4T-1R2N",
+  "QP-3X7P-6K5B","QP-1T9R-8M3W","QP-8B5K-4X1T","QP-4W2N-7P9R",
+  "QP-7P6X-1T4M","QP-5K1B-3N8X","QP-2R4T-9W6P","QP-6X8M-2K1B",
+  "QP-9T3N-5R7W","QP-3B5W-8X2T","QP-1M7K-4P6N","QP-8R2P-9T3X",
+  "QP-4N9X-1B5K","QP-7K3B-6M8R","QP-5P8T-2W4N","QP-2X1R-7K9B",
+  "QP-6W4N-3P1T","QP-9B6K-8R2X","QP-3T2M-5N7W","QP-1R5P-9X3K",
+  "QP-8N7B-4T6M","QP-4K1W-2R8P","QP-7X9T-5B1N","QP-5M3R-6K4X"
+];
+
+const CHARACTERS = {
+  ronaldo: { label:"رونالدو", emoji:"⚽",
+    title:"{name} وكريستيانو رونالدو: مباراة في الحلم",
+    story:[
+      "في صباح مشمس، استيقظ {name} وارتدى حذاءه الرياضي بسرعة، وأمسك كرته الصغيرة وخرج إلى الملعب القريب من بيته.",
+      "وفجأة سمع تصفيقًا… كان كريستيانو رونالدو نفسه يقف عند خط المنتصف ويقول: «مرحبًا {name}! سمعت أنك أسرع لاعب في الحي، هل تقبل التحدي؟»",
+      "بدأت المباراة والكرة تتحرك بين الأقدام بسرعة البرق. راوغ {name}، وسدّد بقوة… هدف! صاح رونالدو: «مهارة رائعة!» ثم علّمه حركة «السيو» الشهيرة.",
+      "في النهاية تعانقا، وأهداه رونالدو شارة فريقه وقال: «يا {name}، الموهبة وحدها لا تكفي، التمرين كل يوم هو السر.»",
+      "عاد {name} إلى البيت وهو يبتسم، وقرّر أن يتدرّب كل يوم ليصبح نجمًا كبيرًا."
+    ]},
+  spiderman: { label:"سبايدرمان", emoji:"🕷️",
+    title:"{name} وصاحب الشبكة العنكبوتية",
+    story:[
+      "في ليلة هادئة فوق أسطح المدينة، كان {name} ينظر إلى النجوم، وفجأة ظهر ظلّ يتأرجح بين الأبنية…",
+      "نزل سبايدرمان أمامه وقال: «مرحبًا {name}! أحتاج مساعدًا سريعًا الليلة، هل أنت مستعد؟»",
+      "انطلقا معًا لإنقاذ قطة عالقة على سطح مرتفع، وتعلّم {name} أن الشجاعة تأتي قبل القوة.",
+      "قال سبايدرمان: «القوة الكبيرة تأتي مع مسؤولية كبيرة يا {name}.»",
+      "عاد {name} إلى بيته فخورًا، وأصبح بطل الحي الصغير الذي يساعد الجميع."
+    ]},
+  elsa: { label:"إلسا", emoji:"👸",
+    title:"{name} وأميرة الجليد",
+    story:[
+      "كان {name} يلعب في الحديقة عندما بدأت الثلوج تتساقط في يوم صيفي غريب!",
+      "ظهرت إلسا من بين الثلج وقالت بابتسامة: «مرحبًا {name}! مملكة الجليد تحتاج قلبًا شجاعًا اليوم، هل تأتي معي؟»",
+      "ذهبا معًا إلى القصر الجليدي، حيث ساعد {name} في إعادة البهجة إلى أطفال المملكة.",
+      "قالت إلسا: «أنت تملك قوة أجمل من الجليد يا {name}… إنها طيبة قلبك.»",
+      "عاد {name} إلى البيت، والثلج يتحول حوله إلى فراشات مضيئة."
+    ]},
+  batman: { label:"باتمان", emoji:"🦇",
+    title:"{name} وحارس المدينة",
+    story:[
+      "في مدينة مظلمة، سمع {name} صوت منبّه غامض ينطلق من سطح البناية المجاورة.",
+      "ظهر باتمان من الظلّ وقال بصوت هادئ: «{name}، المدينة تحتاج عينين يقظتين الليلة، هل أنت معي؟»",
+      "انطلقا في سيارة سوداء لامعة، وأعادا الأمان إلى الحي بعد أن أوقفا لصوص الدراجات.",
+      "قال باتمان: «البطل الحقيقي لا يخاف الظلام يا {name}، بل يصنع النور فيه.»",
+      "نام {name} تلك الليلة وهو يعلم أن الشجاعة تبدأ بخطوة صغيرة."
+    ]},
+  superman: { label:"سوبرمان", emoji:"🦸",
+    title:"{name} وسوبرمان: رحلة فوق السحاب",
+    story:[
+      "خرج {name} إلى سطح البيت ينظر إلى السماء، وفجأة هبط أمامه رجل يرتدي عباءة حمراء!",
+      "قال سوبرمان: «مرحبًا {name}! أريد أن أريك العالم من الأعلى، هل تحب أن تطير؟»",
+      "طارا فوق الجبال والبحار، ورأى {name} مدينته صغيرة وجميلة كخريطة ملوّنة.",
+      "قال سوبرمان: «الطيران سهل يا {name}، لكن الأصعب أن تبقى طيبًا مع الجميع.»",
+      "هبط {name} في حديقة البيت وقلبه مليء بالأحلام الكبيرة."
+    ]},
+  mario: { label:"ماريو", emoji:"🍄",
+    title:"{name} وماريو في مملكة الفطر",
+    story:[
+      "فتح {name} صندوقًا قديمًا في غرفته، فوجد أنبوبًا أخضر يلمع… وقفز منه ماريو!",
+      "قال ماريو: «هيا يا {name}! الأميرة تحتاج مساعدتنا في مملكة الفطر!»",
+      "عبرا الغابات، وجمعا النجوم الذهبية، وتجنّبا الفطر السام بذكاء وسرعة.",
+      "قال ماريو: «كل قفزة كبيرة تبدأ بحماس صغير يا {name}!»",
+      "عاد {name} إلى غرفته والنجوم الذهبية تتلألأ في عينيه."
+    ]},
+  aladdin: { label:"علاء الدين", emoji:"🧞",
+    title:"{name} والمصباح السحري",
+    story:[
+      "أثناء ترتيب مخزن البيت، وجد {name} مصباحًا نحاسيًا قديمًا… وبمجرد أن فركه، خرج منه دخان أزرق!",
+      "ظهر الجني وقال: «أنا جني المصباح، ولك يا {name} ثلاث أمنيات!»",
+      "تمنّى {name} أن يطير فوق المدينة، وأن يبقى البيت مليئًا بالضحك، وأن يجد صديقًا جديدًا… فتحققت الأمنيات كلها.",
+      "قال الجني: «أجمل أمنية يا {name} هي التي تُفرح غيرك قبل نفسك.»",
+      "ابتسم {name} وعرف أن السحر الحقيقي يسكن في قلبه."
+    ]},
+  spongebob: { label:"سبونج بوب", emoji:"🧽",
+    title:"{name} في مدينة قاع الهامور",
+    story:[
+      "غاص {name} في حلمه ووصل إلى مدينة تحت الماء مليئة بالألوان والبيوت الفقاعية.",
+      "استقبله سبونج بوب بضحكة عالية: «أهلًا يا {name}! اليوم سنصنع أفضل برجر في المحيط!»",
+      "عملا معًا في المطعم، وتعلّم {name} أن العمل الجماعي يصنع المعجزات.",
+      "قال سبونج بوب: «الابتسامة يا {name} أقوى من أي قوة في البحر!»",
+      "استيقظ {name} وهو يضحك، وقرّر أن يبدأ يومه بابتسامة."
+    ]}
+};
+
+const LS = { trial:"qt_free_used", unlock:"qt_unlocked", codes:"qt_used_codes" };
+const get = k => localStorage.getItem(k);
+const set = (k,v) => localStorage.setItem(k,v);
+const getUsedCodes = () => JSON.parse(get(LS.codes) || "[]");
+const addUsedCode = c => { const a=getUsedCodes(); a.push(c); set(LS.codes, JSON.stringify(a)); };
+
+let selectedChar = null;
+let photoData = null;
+
+const grid = document.getElementById("charsGrid");
+Object.entries(CHARACTERS).forEach(([key,c]) => {
+  const d = document.createElement("div");
+  d.className = "char";
+  d.dataset.key = key;
+  d.innerHTML = `<span class="em">${c.emoji}</span><span class="nm">${c.label}</span>`;
+  d.onclick = () => {
+    document.querySelectorAll(".char").forEach(x => x.classList.remove("active"));
+    d.classList.add("active");
+    selectedChar = key;
+  };
+  grid.appendChild(d);
+});
+
+const uploadBox = document.getElementById("uploadBox");
+const photoInput = document.getElementById("photoInput");
+const photoPreview = document.getElementById("photoPreview");
+
+uploadBox.onclick = () => photoInput.click();
+
+photoInput.onchange = e => {
+  const f = e.target.files[0];
+  if (!f) return;
+  if (f.size > 5 * 1024 * 1024) { alert("الصورة كبيرة جدًا، اختر صورة أقل من 5 ميجا"); return; }
+  const r = new FileReader();
+  r.onload = ev => {
+    photoData = ev.target.result;
+    photoPreview.src = photoData;
+    photoPreview.style.display = "block";
+    document.getElementById("uploadIcon").style.display = "none";
+    document.getElementById("uploadText").textContent = "تغيير الصورة ✓";
+  };
+  r.readAsDataURL(f);
+};
+
+function buildStory(name, key) {
+  const c = CHARACTERS[key];
+  return {
+    title: c.title.replaceAll("{name}", name),
+    who: `${c.emoji} ${c.label}`,
+    paragraphs: c.story.map(p => p.replaceAll("{name}", name))
+  };
+}
+
+function renderStory() {
+  const name = document.getElementById("childName").value.trim();
+  const s = buildStory(name, selectedChar);
+  document.getElementById("storyTitle").textContent = s.title;
+  document.getElementById("storyWho").textContent = s.who;
+  const body = document.getElementById("storyBody");
+  body.innerHTML = "";
+  s.paragraphs.forEach(p => {
+    const el = document.createElement("p");
+    el.textContent = p;
+    body.appendChild(el);
+  });
+  const sp = document.getElementById("storyPhoto");
+  const ph = document.getElementById("storyPhotoPlaceholder");
+  if (photoData) {
+    sp.src = photoData; sp.style.display = "block"; ph.style.display = "none";
+  } else {
+    sp.style.display = "none"; ph.style.display = "grid";
+  }
+  document.getElementById("storyBox").style.display = "block";
+  document.getElementById("storyBox").scrollIntoView({ behavior:"smooth", block:"start" });
+}
+
+const payOverlay = document.getElementById("payOverlay");
+
+document.getElementById("generateBtn").onclick = () => {
+  const name = document.getElementById("childName").value.trim();
+  if (!name) { alert("من فضلك اكتب اسم الطفل 🙂"); return; }
+  if (!selectedChar) { alert("من فضلك اختر بطل القصة 🎭"); return; }
+  const unlocked  = get(LS.unlock) === "1";
+  const trialUsed = get(LS.trial) === "1";
+  if (unlocked || !trialUsed) {
+    if (!trialUsed) {
+      set(LS.trial, "1");
+      document.getElementById("freeBadge").textContent = "✅ تم استخدام القصة المجانية";
+    }
+    renderStory();
+  } else {
+    payOverlay.classList.add("show");
+  }
+};
+
+document.getElementById("closePay").onclick = () => payOverlay.classList.remove("show");
+payOverlay.onclick = e => { if (e.target === payOverlay) payOverlay.classList.remove("show"); };
+
+const codeInput = document.getElementById("codeInput");
+const codeMsg   = document.getElementById("codeMsg");
+
+document.getElementById("activateBtn").onclick = () => {
+  const code = codeInput.value.trim().toUpperCase().replace(/\s+/g,"");
+  const used = getUsedCodes();
+  codeMsg.className = "msg";
+  if (!code) { codeMsg.textContent = "أدخل الكود أولًا"; codeMsg.classList.add("err"); return; }
+  if (used.includes(code)) {
+    codeMsg.textContent = "هذا الكود مستخدم من قبل ❌";
+    codeMsg.classList.add("err");
+    return;
+  }
+  if (!VALID_CODES.includes(code)) {
+    codeMsg.textContent = "كود غير صحيح، تأكد من الكتابة ❌";
+    codeMsg.classList.add("err");
+    return;
+  }
+  addUsedCode(code);
+  set(LS.unlock, "1");
+  codeMsg.textContent = "تم التفعيل بنجاح! جارٍ إنشاء القصة… ✅";
+  codeMsg.classList.add("ok");
+  setTimeout(() => {
+    payOverlay.classList.remove("show");
+    codeInput.value = "";
+    codeMsg.textContent = "";
+    renderStory();
+    document.getElementById("freeBadge").textContent = "⭐ حسابك مفعّل — قصص غير محدودة";
+    renderAdminCodes();
+  }, 1100);
+};
+
+document.getElementById("newStoryBtn").onclick = () => {
+  document.getElementById("storyBox").style.display = "none";
+  document.getElementById("formCard").scrollIntoView({ behavior:"smooth" });
+};
+
+const adminPanel = document.getElementById("adminPanel");
+
+document.getElementById("adminToggle").onclick = () => {
+  if (adminPanel.style.display === "block") {
+    adminPanel.style.display = "none";
+    return;
+  }
+  const pass = prompt("أدخل كلمة مرور المشرف:");
+  if (pass === "admin123") {
+    adminPanel.style.display = "block";
+    renderAdminCodes();
+    adminPanel.scrollIntoView({ behavior:"smooth" });
+  } else if (pass !== null) {
+    alert("كلمة المرور غير صحيحة");
+  }
+};
+
+function renderAdminCodes() {
+  const used = getUsedCodes();
+  const list = document.getElementById("codeList");
+  list.innerHTML = "";
+  VALID_CODES.forEach(code => {
+    const isUsed = used.includes(code);
+    const row = document.createElement("div");
+    row.className = "code-item" + (isUsed ? " used" : "");
+    row.innerHTML = `<span>${code} ${isUsed ? "✔ مستخدم" : ""}</span>`;
+    if (!isUsed) {
+      const b = document.createElement("button");
+      b.textContent = "نسخ";
+      b.onclick = () => {
+        navigator.clipboard.writeText(code).then(() => {
+          b.textContent = "✓ تم";
+          setTimeout(() => b.textContent = "نسخ", 1200);
+        });
+      };
+      row.appendChild(b);
+    }
+    list.appendChild(row);
+  });
+}
+
+(function init() {
+  if (get(LS.trial) === "1") {
+    document.getElementById("freeBadge").textContent = "✅ تم استخدام القصة المجانية";
+  }
+  if (get(LS.unlock) === "1") {
+    document.getElementById("freeBadge").textContent = "⭐ حسابك مفعّل — قصص غير محدودة";
+  }
+})();
+</script>
+</body>
+</html>
